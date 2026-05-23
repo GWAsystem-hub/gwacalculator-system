@@ -129,5 +129,25 @@
   }
 </script>
 
+  <canvas id="gwaTrendChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('gwaTrendChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+    datasets: [{
+      label: 'GWA Trend',
+      data: [1.90, 1.85, 1.80, 1.75],
+      borderColor: '#004080',
+      backgroundColor: 'rgba(0,64,128,0.2)',
+      fill: true
+    }]
+  }
+});
+</script>
+
+
 </body>
 </html>

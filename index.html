@@ -5,9 +5,14 @@
   <title>Web-Based GWA System Prototype</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #1e1e2f; color: #eee; margin: 0; }
+    body { font-family: Arial, sans-serif; background: #1e1e2f; color: #eee; margin: 0; display:flex; }
     header { background: #004080; padding: 15px; text-align: center; color: white; }
-    .container { padding: 20px; }
+    .sidebar { width: 200px; background:#2a2a3d; padding:20px; height:100vh; }
+    .sidebar h3 { color:#4da6ff; }
+    .sidebar ul { list-style:none; padding:0; }
+    .sidebar li { margin:15px 0; cursor:pointer; }
+    .sidebar li span { margin-right:8px; }
+    .container { flex:1; padding:20px; }
     .login-box, .page { max-width: 400px; margin: 80px auto; padding: 20px; background: #2a2a3d; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
     h2 { text-align: center; color: #4da6ff; }
     input { width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 4px; }
@@ -22,30 +27,45 @@
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     th, td { border: 1px solid #555; padding: 8px; text-align: center; }
     th { background: #444; }
+    .input-group { display:flex; align-items:center; background:#fff; border-radius:4px; margin-bottom:10px; }
+    .input-group span { padding:10px; color:#004080; }
+    .input-group input { flex:1; border:none; outline:none; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Web-Based GWA System Prototype</h1>
-</header>
+<!-- Login -->
+<div id="loginPage" class="login-box">
+  <h2>Welcome Back</h2>
+  <p style="text-align:center;">Sign in to your academic dashboard</p>
 
-<div class="container">
-
-  <!-- Login -->
-  <div id="loginPage" class="login-box">
-    <h2>Welcome Back</h2>
-    <p style="text-align:center;">Sign in to your academic dashboard</p>
-    <label>SCHOOL ID</label>
+  <div class="input-group">
+    <span>👤</span>
     <input type="text" id="username" placeholder="e.g. strongadmin">
-    <label>PASSWORD</label>
-    <input type="password" id="password" placeholder="Enter your password">
-    <button onclick="login()">Sign In</button>
-    <p style="font-size:12px; text-align:center; margin-top:10px;">Need an account? Please contact the admin to register your student profile.</p>
   </div>
 
-  <!-- Dashboard -->
-  <div id="dashboardPage" class="page" style="display:none;">
+  <div class="input-group">
+    <span>🔒</span>
+    <input type="password" id="password" placeholder="Enter your password">
+    <span id="togglePassword" style="cursor:pointer;">👁️</span>
+  </div>
+
+  <button onclick="login()">Sign In</button>
+  <p style="font-size:12px; text-align:center; margin-top:10px;">Need an account? Please contact the admin to register your student profile.</p>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboardPage" style="display:none; width:100%;">
+  <div class="sidebar">
+    <h3>Menu</h3>
+    <ul>
+      <li onclick="showDashboard()"><span>🏠</span>Dashboard</li>
+      <li onclick="showRecords()"><span>📂</span>Records</li>
+      <li onclick="showAnalysis()"><span>🎓</span>Honors</li>
+      <li onclick="logout()"><span>🔑</span>Logout</li>
+    </ul>
+  </div>
+  <div class="container">
     <h2>Dashboard</h2>
     <p>Welcome, <span id="userDisplay"></span>!</p>
     
@@ -69,45 +89,39 @@
       <h3>Honors Eligibility</h3>
       <canvas id="honorsChart"></canvas>
     </div>
-
-    <div style="margin-top:20px;">
-      <button onclick="showRecords()">View Academic Records</button>
-      <button onclick="showAnalysis()">Check GWA Analysis</button>
-      <button class="logout" onclick="logout()">Log Out</button>
-    </div>
   </div>
+</div>
 
-  <!-- Academic Records -->
-  <div id="recordsPage" class="page" style="display:none;">
-    <h2>Academic Records</h2>
-    <table>
-      <tr><th>Subject</th><th>Units</th><th>Grade</th></tr>
-      <tr><td>Programming 1</td><td>3</td><td>1.75</td></tr>
-      <tr><td>Database Systems</td><td>3</td><td>1.50</td></tr>
-      <tr><td>Networking</td><td>3</td><td>2.00</td></tr>
-    </table>
-    <button onclick="backToDashboard()">Back to Dashboard</button>
-  </div>
+<!-- Records -->
+<div id="recordsPage" class="page" style="display:none;">
+  <h2>Academic Records</h2>
+  <table>
+    <tr><th>Subject</th><th>Units</th><th>Grade</th></tr>
+    <tr><td>Programming 1</td><td>3</td><td>1.75</td></tr>
+    <tr><td>Database Systems</td><td>3</td><td>1.50</td></tr>
+    <tr><td>Networking</td><td>3</td><td>2.00</td></tr>
+  </table>
+  <button onclick="backToDashboard()">Back to Dashboard</button>
+</div>
 
-  <!-- GWA Analysis -->
-  <div id="analysisPage" class="page" style="display:none;">
-    <h2>GWA Analysis</h2>
-    <p><strong>Computed GWA:</strong> 1.75</p>
-    <p><strong>Pass/Fail:</strong> Pass</p>
-    <p><strong>Dean’s List Qualification:</strong> Eligible</p>
-    <p><strong>Latin Honors Eligibility:</strong> Cum Laude</p>
-    <button onclick="backToDashboard()">Back to Dashboard</button>
-  </div>
-
+<!-- Analysis -->
+<div id="analysisPage" class="page" style="display:none;">
+  <h2>GWA Analysis</h2>
+  <p><strong>Computed GWA:</strong> 1.75</p>
+  <p><strong>Pass/Fail:</strong> Pass</p>
+  <p><strong>Dean’s List Qualification:</strong> Eligible</p>
+  <p><strong>Latin Honors Eligibility:</strong> Cum Laude</p>
+  <button onclick="backToDashboard()">Back to Dashboard</button>
 </div>
 
 <script>
+  // Login
   function login() {
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
     if(user === "strongadmin" && pass === "pass123") {
       document.getElementById("loginPage").style.display = "none";
-      document.getElementById("dashboardPage").style.display = "block";
+      document.getElementById("dashboardPage").style.display = "flex";
       document.getElementById("userDisplay").innerText = user;
       renderCharts();
     } else {
@@ -115,61 +129,36 @@
     }
   }
 
+  // Toggle password visibility
+  document.getElementById("togglePassword").addEventListener("click", function() {
+    const passwordField = document.getElementById("password");
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      this.textContent = "🙈";
+    } else {
+      passwordField.type = "password";
+      this.textContent = "👁️";
+    }
+  });
+
+  // Navigation
+  function showDashboard() {
+    document.getElementById("recordsPage").style.display = "none";
+    document.getElementById("analysisPage").style.display = "none";
+    document.getElementById("dashboardPage").style.display = "flex";
+  }
   function showRecords() {
     document.getElementById("dashboardPage").style.display = "none";
     document.getElementById("recordsPage").style.display = "block";
   }
-
   function showAnalysis() {
     document.getElementById("dashboardPage").style.display = "none";
     document.getElementById("analysisPage").style.display = "block";
   }
-
   function backToDashboard() {
     document.getElementById("recordsPage").style.display = "none";
     document.getElementById("analysisPage").style.display = "none";
-    document.getElementById("dashboardPage").style.display = "block";
+    document.getElementById("dashboardPage").style.display = "flex";
   }
-
   function logout() {
-    document.getElementById("dashboardPage").style.display = "none";
-    document.getElementById("recordsPage").style.display = "none";
-    document.getElementById("analysisPage").style.display = "none";
-    document.getElementById("loginPage").style.display = "block";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-  }
-
-  function renderCharts() {
-    // Line Chart: GWA Trend
-    new Chart(document.getElementById('gwaTrendChart'), {
-      type: 'line',
-      data: {
-        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-        datasets: [{
-          label: 'GWA Trend',
-          data: [1.90, 1.85, 1.80, 1.75],
-          borderColor: '#4da6ff',
-          backgroundColor: 'rgba(77,166,255,0.2)',
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: { plugins:{legend:{labels:{color:'#eee'}}}, scales:{x:{ticks:{color:'#eee'}},y:{ticks:{color:'#eee'}}}}
-    });
-
-    // Pie Chart: Pass vs Fail
-    new Chart(document.getElementById('passFailChart'), {
-      type: 'pie',
-      data: {
-        labels: ['Pass', 'Fail'],
-        datasets: [{
-          data: [85, 15],
-          backgroundColor: ['#4da6ff','#ff4d4d']
-        }]
-      },
-      options: { plugins:{legend:{labels:{color:'#eee'}}}}
-    });
-
-    // Donut Chart: Honors Eligibility
-    new Chart(document.getElementById('honors
+    document

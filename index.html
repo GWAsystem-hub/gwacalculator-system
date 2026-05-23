@@ -65,7 +65,8 @@
   <div class="card"><h3>Status</h3><p id="status"></p></div>
 </div>
 
-   <div style="margin-top:30px; background:#fafafa; border:1px solid #ccc; border-radius:6px; padding:20px;">
+<!-- Performance Trend Section -->
+<div style="margin-top:30px; background:#fafafa; border:1px solid #ccc; border-radius:6px; padding:20px;">
   <h3>Performance Trend</h3>
   <label>Subject</label>
   <input type="text" id="subject">
@@ -74,9 +75,17 @@
   <label>Grade</label>
   <input type="number" step="0.01" id="grade">
   <button onclick="addRecord()">Add Record</button>
-  <button onclick="computeGWA()">Calculate GWA</button>
-  <!-- NEW CLEAR BUTTON -->
+  <!-- REMOVE THIS LINE:
+  <button onclick="computeGWA()">Calculate GWA</button> -->
   <button onclick="clearRecords()">Clear All Records</button>
+
+  <table id="recordsTable" style="margin-top:15px; width:100%; border-collapse:collapse;">
+    <tr><th>Subject</th><th>Units</th><th>Grade</th><th>Action</th></tr>
+  </table>
+
+  <p id="gwaResult" style="margin-top:10px; font-weight:bold;"></p>
+</div>
+
 
   <table id="recordsTable" style="margin-top:15px; width:100%; border-collapse:collapse;">
     <tr><th>Subject</th><th>Units</th><th>Grade</th><th>Action</th></tr>
@@ -154,81 +163,57 @@
   }
 
   function addRecord() {
-    const subject = document.getElementById("subject").value.trim();
-    const units = parseFloat(document.getElementById("units").value);
-    const grade = parseFloat(document.getElementById("grade").value);
+  const subject = document.getElementById("subject").value.trim();
+  const units = parseFloat(document.getElementById("units").value);
+  const grade = parseFloat(document.getElementById("grade").value);
 
-    if(subject && !isNaN(units) && !isNaN(grade)) {
-      // Add row to dashboard table
-      const table = document.getElementById("recordsTable");
-      const row = table.insertRow();
-      row.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>
-                       <td><button onclick="removeRecord(this)">Remove</button></td>`;
-
-      // Add row to Records page table
-      const recordsPageTable = document.getElementById("recordsPageTable");
-      const row2 = recordsPageTable.insertRow();
-      row2.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>`;
-
-      // Clear inputs
-      document.getElementById("subject").value = "";
-      document.getElementById("units").value = "";
-      document.getElementById("grade").value = "";
-
-      computeGWA();
-    } else {
-      alert("Please enter valid subject, units, and grade.");
-    }
-  }
-
-  // Remove a single subject row
-  function removeRecord(button) {
-    const row = button.parentNode.parentNode;
-    const subject = row.cells[0].innerText;
-    const units = row.cells[1].innerText;
-    const grade = row.cells[2].innerText;
-
-    // Remove from dashboard table
-    row.parentNode.removeChild(row);
-
-    // Remove from Records page table (match subject+units+grade)
-    const recordsPageTable = document.getElementById("recordsPageTable");
-    for(let i=1; i<recordsPageTable.rows.length; i++) {
-      if(recordsPageTable.rows[i].cells[0].innerText === subject &&
-         recordsPageTable.rows[i].cells[1].innerText === units &&
-         recordsPageTable.rows[i].cells[2].innerText === grade) {
-        recordsPageTable.deleteRow(i);
-        break;
-      }
-    }
-
-    computeGWA();
-  }
-
-  // Clear all records
-  function clearRecords() {
-    // Clear dashboard table
+  if(subject && !isNaN(units) && !isNaN(grade)) {
+    // Add row to dashboard table
     const table = document.getElementById("recordsTable");
-    while(table.rows.length > 1) {
-      table.deleteRow(1);
-    }
+    const row = table.insertRow();
+    row.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>
+                     <td><button onclick="removeRecord(this)">Remove</button></td>`;
 
-    // Clear Records page table
+    // Add row to Records page table
     const recordsPageTable = document.getElementById("recordsPageTable");
-    while(recordsPageTable.rows.length > 1) {
-      recordsPageTable.deleteRow(1);
-    }
+    const row2 = recordsPageTable.insertRow();
+    row2.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>`;
 
-    // Reset results
-    document.getElementById("gwaResult").innerText = "Computed GWA: -";
-    document.getElementById("semGWA").innerText = "-";
-    document.getElementById("cumGWA").innerText = "-";
-    document.getElementById("status").innerText = "-";
-    document.getElementById("analysisGWA").innerHTML = "<strong>Computed GWA:</strong> -";
-    document.getElementById("analysisPassFail").innerHTML = "<strong>Pass/Fail:</strong> -";
-    document.getElementById("analysisDean").innerHTML = "<strong>Dean’s List Qualification:</strong> -";
-    document.getElementById("analysisHonors").innerHTML = "<strong>Latin Honors Eligibility:</strong> -";
+    // Clear inputs
+    document.getElementById("subject").value = "";
+    document.getElementById("units").value = "";
+    document.getElementById("grade").value = "";
+
+    // ✅ Always recompute after adding
+    computeGWA();
+  } else {
+    alert("Please enter valid subject, units, and grade.");
   }
+}
+
+function removeRecord(button) {
+  const row = button.parentNode.parentNode;
+  const subject = row.cells[0].innerText;
+  const units = row.cells[1].innerText;
+  const grade = row.cells[2].innerText;
+
+  // Remove from dashboard table
+  row.parentNode.removeChild(row);
+
+  // Remove from Records page table (match subject+units+grade)
+  const recordsPageTable = document.getElementById("recordsPageTable");
+  for(let i=1; i<recordsPageTable.rows.length; i++) {
+    if(recordsPageTable.rows[i].cells[0].innerText === subject &&
+       recordsPageTable.rows[i].cells[1].innerText === units &&
+       recordsPageTable.rows[i].cells[2].innerText === grade) {
+      recordsPageTable.deleteRow(i);
+      break;
+    }
+  }
+
+  // ✅ Always recompute after removing
+  computeGWA();
+}
 </script>
 
 

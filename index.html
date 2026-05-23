@@ -3,91 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <title>Web-Based GWA System Prototype</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; }
-    .login-box, .page { max-width: 400px; margin: 80px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #004080; }
-    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-    button { width: 100%; padding: 10px; background: #004080; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #0066cc; }
+    body { font-family: Arial, sans-serif; background: #1e1e2f; color: #eee; margin: 0; }
+    header { background: #004080; padding: 15px; text-align: center; color: white; }
+    .container { padding: 20px; }
+    .login-box, .page { max-width: 400px; margin: 80px auto; padding: 20px; background: #2a2a3d; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+    h2 { text-align: center; color: #4da6ff; }
+    input { width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 4px; }
+    button { width: 100%; padding: 10px; background: #4da6ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1a75d1; }
     .logout { background: #c00; }
+    .dashboard-cards { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+    .card { flex:1; min-width:180px; background:#333; padding:15px; border-radius:8px; text-align:center; }
+    .card h3 { margin:0; color:#4da6ff; }
+    .card p { font-size:22px; font-weight:bold; margin-top:10px; }
+    .chart-box { margin-top:30px; background:#2a2a3d; border-radius:8px; padding:20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background: #f0f0f0; }
+    th, td { border: 1px solid #555; padding: 8px; text-align: center; }
+    th { background: #444; }
   </style>
 </head>
 <body>
 
-<!-- Step 4: Login -->
-<div id="loginPage" class="login-box">
-  <h2>Welcome Back</h2>
-  <p style="text-align:center;">Sign in to your academic dashboard</p>
-  <label>SCHOOL ID</label>
-  <input type="text" id="username" placeholder="e.g. strongadmin">
-  <label>PASSWORD</label>
-  <input type="password" id="password" placeholder="Enter your password">
-  <button onclick="login()">Sign In</button>
-  <p style="font-size:12px; text-align:center; margin-top:10px;">Need an account? Please contact the admin to register your student profile.</p>
-</div>
+<header>
+  <h1>Web-Based GWA System Prototype</h1>
+</header>
 
-<!-- Step 5: Dashboard -->
-<div id="dashboardPage" class="page" style="display:none;">
-  <h2>Dashboard</h2>
-  <p>Welcome, <span id="userDisplay"></span>!</p>
-  
-  <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:20px;">
-    <!-- Card 1 -->
-    <div style="flex:1; min-width:180px; background:#e6f0ff; padding:15px; border-radius:8px; text-align:center;">
-      <h3>Semester GWA</h3>
-      <p style="font-size:24px; font-weight:bold;">1.75</p>
+<div class="container">
+
+  <!-- Login -->
+  <div id="loginPage" class="login-box">
+    <h2>Welcome Back</h2>
+    <p style="text-align:center;">Sign in to your academic dashboard</p>
+    <label>SCHOOL ID</label>
+    <input type="text" id="username" placeholder="e.g. strongadmin">
+    <label>PASSWORD</label>
+    <input type="password" id="password" placeholder="Enter your password">
+    <button onclick="login()">Sign In</button>
+    <p style="font-size:12px; text-align:center; margin-top:10px;">Need an account? Please contact the admin to register your student profile.</p>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboardPage" class="page" style="display:none;">
+    <h2>Dashboard</h2>
+    <p>Welcome, <span id="userDisplay"></span>!</p>
+    
+    <div class="dashboard-cards">
+      <div class="card"><h3>Semester GWA</h3><p>1.75</p></div>
+      <div class="card"><h3>Cumulative GWA</h3><p>1.80</p></div>
+      <div class="card"><h3>Status</h3><p>Dean’s List</p></div>
     </div>
-    <!-- Card 2 -->
-    <div style="flex:1; min-width:180px; background:#e6ffe6; padding:15px; border-radius:8px; text-align:center;">
-      <h3>Cumulative GWA</h3>
-      <p style="font-size:24px; font-weight:bold;">1.80</p>
+
+    <div class="chart-box">
+      <h3>Performance Trend</h3>
+      <canvas id="gwaTrendChart"></canvas>
     </div>
-    <!-- Card 3 -->
-    <div style="flex:1; min-width:180px; background:#fff0e6; padding:15px; border-radius:8px; text-align:center;">
-      <h3>Status</h3>
-      <p style="font-size:20px; font-weight:bold;">Dean’s List</p>
+
+    <div class="chart-box">
+      <h3>Pass vs Fail Subjects</h3>
+      <canvas id="passFailChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Honors Eligibility</h3>
+      <canvas id="honorsChart"></canvas>
+    </div>
+
+    <div style="margin-top:20px;">
+      <button onclick="showRecords()">View Academic Records</button>
+      <button onclick="showAnalysis()">Check GWA Analysis</button>
+      <button class="logout" onclick="logout()">Log Out</button>
     </div>
   </div>
 
-  <!-- Placeholder chart -->
-  <div style="margin-top:30px; background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:20px;">
-    <h3>Performance Trend</h3>
-    <p>[Insert chart screenshot here – e.g., line graph of GWA per semester]</p>
+  <!-- Academic Records -->
+  <div id="recordsPage" class="page" style="display:none;">
+    <h2>Academic Records</h2>
+    <table>
+      <tr><th>Subject</th><th>Units</th><th>Grade</th></tr>
+      <tr><td>Programming 1</td><td>3</td><td>1.75</td></tr>
+      <tr><td>Database Systems</td><td>3</td><td>1.50</td></tr>
+      <tr><td>Networking</td><td>3</td><td>2.00</td></tr>
+    </table>
+    <button onclick="backToDashboard()">Back to Dashboard</button>
   </div>
 
-  <div style="margin-top:20px;">
-    <button onclick="showRecords()">View Academic Records</button>
-    <button onclick="showAnalysis()">Check GWA Analysis</button>
-    <button class="logout" onclick="logout()">Log Out</button>
+  <!-- GWA Analysis -->
+  <div id="analysisPage" class="page" style="display:none;">
+    <h2>GWA Analysis</h2>
+    <p><strong>Computed GWA:</strong> 1.75</p>
+    <p><strong>Pass/Fail:</strong> Pass</p>
+    <p><strong>Dean’s List Qualification:</strong> Eligible</p>
+    <p><strong>Latin Honors Eligibility:</strong> Cum Laude</p>
+    <button onclick="backToDashboard()">Back to Dashboard</button>
   </div>
-</div>
 
-
-
-<!-- Step 6: Academic Records -->
-<div id="recordsPage" class="page" style="display:none;">
-  <h2>Academic Records</h2>
-  <table>
-    <tr><th>Subject</th><th>Units</th><th>Grade</th></tr>
-    <tr><td>Programming 1</td><td>3</td><td>1.75</td></tr>
-    <tr><td>Database Systems</td><td>3</td><td>1.50</td></tr>
-    <tr><td>Networking</td><td>3</td><td>2.00</td></tr>
-  </table>
-  <button onclick="backToDashboard()">Back to Dashboard</button>
-</div>
-
-<!-- Step 7: GWA Analysis -->
-<div id="analysisPage" class="page" style="display:none;">
-  <h2>GWA Analysis</h2>
-  <p><strong>Computed GWA:</strong> 1.75</p>
-  <p><strong>Pass/Fail:</strong> Pass</p>
-  <p><strong>Dean’s List Qualification:</strong> Eligible</p>
-  <p><strong>Latin Honors Eligibility:</strong> Cum Laude</p>
-  <button onclick="backToDashboard()">Back to Dashboard</button>
 </div>
 
 <script>
@@ -98,8 +109,9 @@
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("dashboardPage").style.display = "block";
       document.getElementById("userDisplay").innerText = user;
+      renderCharts();
     } else {
-      alert("Invalid credentials. Try username: strongadmin and password: pass123");
+      alert("Invalid credentials. Use username: strongadmin and password: pass123");
     }
   }
 
@@ -127,27 +139,37 @@
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
   }
-</script>
 
-  <canvas id="gwaTrendChart"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('gwaTrendChart').getContext('2d');
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-    datasets: [{
-      label: 'GWA Trend',
-      data: [1.90, 1.85, 1.80, 1.75],
-      borderColor: '#004080',
-      backgroundColor: 'rgba(0,64,128,0.2)',
-      fill: true
-    }]
-  }
-});
-</script>
+  function renderCharts() {
+    // Line Chart: GWA Trend
+    new Chart(document.getElementById('gwaTrendChart'), {
+      type: 'line',
+      data: {
+        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+        datasets: [{
+          label: 'GWA Trend',
+          data: [1.90, 1.85, 1.80, 1.75],
+          borderColor: '#4da6ff',
+          backgroundColor: 'rgba(77,166,255,0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { plugins:{legend:{labels:{color:'#eee'}}}, scales:{x:{ticks:{color:'#eee'}},y:{ticks:{color:'#eee'}}}}
+    });
 
+    // Pie Chart: Pass vs Fail
+    new Chart(document.getElementById('passFailChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Pass', 'Fail'],
+        datasets: [{
+          data: [85, 15],
+          backgroundColor: ['#4da6ff','#ff4d4d']
+        }]
+      },
+      options: { plugins:{legend:{labels:{color:'#eee'}}}}
+    });
 
-</body>
-</html>
+    // Donut Chart: Honors Eligibility
+    new Chart(document.getElementById('honors

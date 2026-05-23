@@ -37,7 +37,7 @@
   <h2>Welcome Back</h2>
   <p style="text-align:center;">Sign in to your academic dashboard</p>
   <label>SCHOOL ID</label>
-  <input type="text" id="username" placeholder="StudentID">
+  <input type="text" id="username" placeholder="e.g. strongadmin">
   <label>PASSWORD</label>
   <input type="password" id="password" placeholder="Enter your password">
   <button onclick="login()">Sign In</button>
@@ -114,7 +114,7 @@
   function login() {
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
-    if(user === "strongadmin" && pass === "pass123") {
+    if(user === "Strongadmin" && pass === "pass123") {
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("dashboardPage").style.display = "block";
       document.getElementById("userDisplay").innerText = user;
@@ -171,3 +171,5 @@
 
   function initChart() {
     const ctx = document.getElementById('gwaTrendChart').getContext
+  }
+      }

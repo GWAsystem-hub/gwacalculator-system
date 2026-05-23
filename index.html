@@ -159,14 +159,22 @@
     const grade = parseFloat(document.getElementById("grade").value);
 
     if(subject && !isNaN(units) && !isNaN(grade)) {
+      // Add row to dashboard table
       const table = document.getElementById("recordsTable");
       const row = table.insertRow();
       row.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>`;
 
+      // Also add row to Records page table
+      const recordsPageTable = document.querySelector("#recordsPage table");
+      const row2 = recordsPageTable.insertRow();
+      row2.innerHTML = `<td>${subject}</td><td>${units}</td><td>${grade}</td>`;
+
+      // Clear inputs
       document.getElementById("subject").value = "";
       document.getElementById("units").value = "";
       document.getElementById("grade").value = "";
 
+      // Recompute GWA automatically
       computeGWA();
     } else {
       alert("Please enter valid subject, units, and grade.");
@@ -210,6 +218,7 @@
     }
   }
 </script>
+
 
 </body>
 </html>
